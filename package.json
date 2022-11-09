@@ -1,0 +1,29 @@
+{
+  "name": "tiny-parse-argv",
+  "repository": "github:fabiospampinato/tiny-parse-argv",
+  "description": "A tiny function for parsing process.argv.",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "clean": "tsex clean",
+    "compile": "tsex compile",
+    "compile:watch": "tsex compile --watch",
+    "prepublishOnly": "npm run clean && npm run compile"
+  },
+  "keywords": [
+    "tiny",
+    "parse",
+    "argv"
+  ],
+  "dependencies": {
+    "minimist": "^1.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "tsex": "^1.1.2",
+    "typescript": "^4.8.4"
+  }
+}
