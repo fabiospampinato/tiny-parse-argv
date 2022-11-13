@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import * as minimist from 'minimist';
+import minimist from 'minimist';
 import process from 'node:process';
 import type {Options, ParsedArgs} from './types';
 
