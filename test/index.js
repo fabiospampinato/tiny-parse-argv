@@ -31,6 +31,58 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports detecting missing flags', t => {
+
+    t.plan ( 2 );
+
+    parse ( t, {
+      input: ['--foo'],
+      options: {
+        alias: { f: ['foo'] },
+        required: ['foo', 'f', 'bar', 'b', 'baz'],
+        default: { baz: false },
+        onMissing ( flags ) {
+          t.deepEqual ( flags, ['bar', 'b'] );
+        }
+      },
+      output: {
+        foo: true,
+        f: true,
+        baz: false,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
+  it ( 'supports detecting unknown flags', t => {
+
+    t.plan ( 2 );
+
+    parse ( t, {
+      input: ['--foo', '--bar', '--baz', '--qux'],
+      options: {
+        boolean: ['foo'],
+        alias: { f: ['foo'] },
+        default: { baz: false },
+        onUnknown ( flags ) {
+          t.deepEqual ( flags, ['bar', 'qux'] );
+        }
+      },
+      output: {
+        foo: true,
+        f: true,
+        bar: true,
+        baz: true,
+        qux: true,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   // bool: https://github.com/minimistjs/minimist/blob/main/test/bool.js
 
   it ( 'flag boolean default false', t => {

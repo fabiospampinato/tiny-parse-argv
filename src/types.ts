@@ -6,8 +6,11 @@
 type Options = {
   boolean?: string[],
   string?: string[],
+  required?: string[],
   alias?: Record<string, string[]>,
-  default?: Partial<Record<string, any>>
+  default?: Partial<Record<string, any>>,
+  onMissing?: ( flags: string[] ) => void,
+  onUnknown?: ( flags: string[] ) => void
 };
 
 type ParsedArgs = {

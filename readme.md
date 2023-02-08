@@ -15,8 +15,11 @@ The following features are provided:
 - Flags that could lead to prototype pollution issues are safely ignored.
 - `options.boolean`: the value for the listed flags will always be coerced to a boolean.
 - `options.string`: the value for the listed flags will always be coerced to a string.
+- `options.required`: the listed flags are considered to be required, if some are missing `options.onMissing` will be called.
 - `options.alias`: if any aliased flag is assigned then all the aliases for it will be assigned too, automatically.
 - `options.default`: an object containing default values, which will be used if not overridded by the `argv` array.
+- `options.onMissing`: a function that will be called if any of the required flags is missing. If a default value is provided for a flag it won't be considered as missing.
+- `options.onUnknown`: a function that will be called if any of the flags are unknown, i.e. not listed as either a boolean, a string, or an alias. If a default value is provided for a flag it won't be considered as unknown.
 - `--`: a special flag that stops parsing, everything after it will be copied, untouched, into the `--` property of the return object.
 
 ## Differences with `minimist`
@@ -28,7 +31,6 @@ The following differences exist compared to `minimist`:
 - `option.boolean` set to a single string is not supported, always provide an array of flags instead.
 - `option.string` set to a single string is not supported, always provide an array of flags instead.
 - `option.alias` mapping to a single string is not supported, always provide an array of aliases instead.
-- `option.unknown` is not supported, you should handle unknown flags at another level of abstraction.
 - `option.stopEarly` is not supported, it's as if it's always set to `false`.
 - Dotted flags are not supported, so their paths will not be expanded, you can use [`path-prop`](https://github.com/fabiospampinato/path-prop)'s `unflat` function for that.
 

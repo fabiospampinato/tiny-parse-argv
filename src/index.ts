@@ -164,6 +164,10 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const booleans = getAliasedSet ( aliases, options.boolean );
   const strings = getAliasedSet ( aliases, options.string );
   const defaults = options.default || {};
+  const required = options.required || [];
+  const known = new Set ([ ...booleans, ...strings, ...Object.keys ( defaults ) ]);
+  const onMissing = options.onMissing;
+  const onUnknown = options.onUnknown;
 
   const [parse, preserve] = parseDoubleHyphen ( argv );
   const parsed: ParsedArgs = { _: [], '--': preserve };
@@ -210,7 +214,34 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
   }
 
-  return { ...zip ( booleans, false ), ...defaults, ...parsed };
+  const parsedWithDefaults: ParsedArgs = { ...defaults, ...parsed };
+  const parsedWithDefaultsAndBooleans: ParsedArgs = { ...zip ( booleans, false ), ...parsedWithDefaults };
+
+  if ( onUnknown ) {
+
+    const unknowns = Object.keys ( parsedWithDefaults ).filter ( key => key !== '_' && key !== '--' && !known.has ( key ) );
+
+    if ( unknowns.length ) {
+
+      onUnknown ( unknowns );
+
+    }
+
+  }
+
+  if ( onMissing ) {
+
+    const missings = required.filter ( key => !( key in parsedWithDefaults ) );
+
+    if ( missings.length ) {
+
+      onMissing ( missings );
+
+    }
+
+  }
+
+  return parsedWithDefaultsAndBooleans;
 
 };
 
