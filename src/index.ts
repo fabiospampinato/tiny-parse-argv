@@ -217,3 +217,4 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 /* EXPORT */
 
 export default parseArgv;
+export type {Options, ParsedArgs};
