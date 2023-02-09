@@ -83,6 +83,27 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'detects string flags with empty value as missing, when they are required', t => { //TODO: Maybe they should just never receive an empty value
+
+    t.plan ( 2 );
+
+    parse ( t, {
+      input: ['-s'],
+      options: {
+        string: ['s'],
+        required: ['s'],
+        onMissing ( flags ) {
+          t.deepEqual ( flags, ['s'] );
+        }
+      },
+      output: {
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   // bool: https://github.com/minimistjs/minimist/blob/main/test/bool.js
 
   it ( 'flag boolean default false', t => {
