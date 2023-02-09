@@ -827,7 +827,6 @@ describe ( 'tiny-parse-argv', it => {
         string: ['s']
       },
       output: {
-        s: '',
         _: [],
         '--': []
       }
@@ -839,7 +838,6 @@ describe ( 'tiny-parse-argv', it => {
         string: ['str']
       },
       output: {
-        str: '',
         _: [],
         '--': []
       }
@@ -851,9 +849,7 @@ describe ( 'tiny-parse-argv', it => {
         string: ['a', 't'],
       },
       output: {
-        a: '',
         r: true,
-        t: '',
         _: [],
         '--': []
       }

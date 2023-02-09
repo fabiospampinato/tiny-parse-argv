@@ -165,7 +165,6 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const strings = getAliasedSet ( aliases, options.string );
   const defaults = options.default || {};
   const required = options.required || [];
-  const requiredSet = new Set ( required );
   const known = new Set ([ ...booleans, ...strings, ...Object.keys ( defaults ) ]);
   const onMissing = options.onMissing;
   const onUnknown = options.onUnknown;
@@ -187,7 +186,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
       if ( isOverridable ( parsed[key] ) ) { // Maybe we are setting this option multiple times
 
-        if ( !strings.has ( key ) || !requiredSet.has ( key ) ) { // String options shouldn't have an inferred value if they are required
+        if ( !strings.has ( key ) ) { // String options shouldn't have an inferred value
 
           const value = ( strings.has ( key ) ? '' : positive );
 
