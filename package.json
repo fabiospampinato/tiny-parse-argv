@@ -2,7 +2,7 @@
   "name": "tiny-parse-argv",
   "repository": "github:fabiospampinato/tiny-parse-argv",
   "description": "A tiny function for parsing process.argv, a modern rewrite of a sensible subset of minimist.",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "type": "module",
   "main": "dist/index.js",
   "exports": "./dist/index.js",
