@@ -10,11 +10,13 @@ The following features are provided:
 - Single/multiple implicit/explicit shorthand flags: `-f`, `-f some`, `-f 123`, `-f123`, `-abc`, `-abc 123`, `-abc123`, `-f some -f other`.
 - Single/multiple implicit/explicit longhand flags: `--foo`, `--foo some`, `--foo 123`, `--foo=123`, `--foo=some`, `--foo some --foo other`.
 - Explicitly negated flags are `false` by default: `--no-foo`, `--no-bar`.
+- Eager flags consume multiple consecutive values: `-f one two three`, `--foo one two three`.
 - Arguments: `./app.sh with some list of arguments`.
 - Values that would be interpreted as numbers if they were JavaScript are coerced to numbers automatically.
 - Flags that could lead to prototype pollution issues are safely ignored.
 - `options.boolean`: the value for the listed flags will always be coerced to a boolean.
 - `options.string`: the value for the listed flags will always be coerced to a string.
+- `options.eager`: the listed flags are considered to be eager, and will consume multiple consecutive non-flag values.
 - `options.required`: the listed flags are considered to be required, if some are missing `options.onMissing` will be called.
 - `options.alias`: if any aliased flag is assigned then all the aliases for it will be assigned too, automatically.
 - `options.default`: an object containing default values, which will be used if not overridded by the `argv` array.

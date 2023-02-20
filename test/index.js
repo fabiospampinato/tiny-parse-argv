@@ -83,6 +83,26 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports eager flags', t => {
+
+    parse ( t, {
+      input: ['-e', 'foo', 'bar', 'baz', '--eager', 'foo', 'bar', '--regular', 'asd', 'dsa', '--bool', 'b1', 'b2'],
+      options: {
+        boolean: ['bool'],
+        eager: ['e', 'eager', 'bool'],
+      },
+      output: {
+        bool: true,
+        e: ['foo', 'bar', 'baz'],
+        eager: ['foo', 'bar'],
+        regular: 'asd',
+        _: ['dsa', 'b1', 'b2'],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'detects string flags with empty value as missing, when they are required', t => { //TODO: Maybe they should just never receive an empty value
 
     t.plan ( 2 );

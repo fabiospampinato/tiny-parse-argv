@@ -163,6 +163,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const aliases = getAliasesMap ( options.alias );
   const booleans = getAliasedSet ( aliases, options.boolean );
   const strings = getAliasedSet ( aliases, options.string );
+  const eager = getAliasedSet ( aliases, options.eager );
   const defaults = options.default || {};
   const required = options.required || [];
   const known = new Set ([ ...booleans, ...strings, ...Object.keys ( defaults ) ]);
@@ -174,6 +175,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const args = parseCharSeparator ( parseImplicitSeparator ( parseEqualsSeparator ( parseProto ( parse ) ) ) );
 
   let optionPrev: string = '';
+  let optionEagerPrev: string = '';
 
   for ( let i = 0, l = args.length; i < l; i++ ) {
 
@@ -197,18 +199,25 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
       }
 
       optionPrev = option;
+      optionEagerPrev = eager.has ( key ) ? option : '';
 
     } else { // Value or Argument
 
       const value = parseValue ( optionPrev, arg, booleans, strings );
 
-      if ( optionPrev && ( !booleans.has ( optionPrev ) || isBoolean ( value ) ) ) { // Value
+      if ( optionPrev && ( !booleans.has ( optionPrev ) || isBoolean ( value ) ) ) { // Regular value
 
         setAliased ( parsed, optionPrev, value, aliases );
+
+      } else if ( optionEagerPrev && !booleans.has ( optionEagerPrev ) ) { // Eager value
+
+        setAliased ( parsed, optionEagerPrev, value, aliases );
 
       } else { // Argument
 
         parsed._.push ( String ( value ) );
+
+        optionEagerPrev = '';
 
       }
 

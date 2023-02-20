@@ -6,6 +6,7 @@
 type Options = {
   boolean?: string[],
   string?: string[],
+  eager?: string[],
   required?: string[],
   alias?: Record<string, string[]>,
   default?: Partial<Record<string, any>>,
