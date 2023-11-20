@@ -31,6 +31,26 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports detecting invalid flags', t => {
+
+    t.plan ( 2 );
+
+    parse ( t, {
+      input: ['--foo', '--bar', '--no-baz'],
+      options: {
+        string: ['foo', 'bar', 'baz'],
+        onInvalid ( flags ) {
+          t.deepEqual ( flags, ['foo', 'bar', 'baz'] );
+        }
+      },
+      output: {
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'supports detecting missing flags', t => {
 
     t.plan ( 2 );

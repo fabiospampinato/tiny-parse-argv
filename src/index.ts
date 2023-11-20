@@ -167,6 +167,8 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const defaults = options.default || {};
   const required = options.required || [];
   const known = new Set ([ ...booleans, ...strings, ...Object.keys ( defaults ) ]);
+  const found: string[] = [];
+  const onInvalid = options.onInvalid;
   const onMissing = options.onMissing;
   const onUnknown = options.onUnknown;
 
@@ -197,6 +199,8 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
         }
 
       }
+
+      found.push ( key );
 
       optionPrev = option;
       optionEagerPrev = eager.has ( key ) ? option : '';
@@ -249,6 +253,18 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
     if ( missings.length ) {
 
       onMissing ( missings );
+
+    }
+
+  }
+
+  if ( onInvalid ) {
+
+    const invalids = found.filter ( key => parsedWithDefaults[key] === undefined );
+
+    if ( invalids.length ) {
+
+      onInvalid ( invalids );
 
     }
 

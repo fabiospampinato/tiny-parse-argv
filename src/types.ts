@@ -10,6 +10,7 @@ type Options = {
   required?: string[],
   alias?: Record<string, string[]>,
   default?: Partial<Record<string, any>>,
+  onInvalid?: ( flags: string[] ) => void,
   onMissing?: ( flags: string[] ) => void,
   onUnknown?: ( flags: string[] ) => void
 };
