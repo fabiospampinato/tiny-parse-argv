@@ -123,6 +123,29 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports explicitly variadic flags', t => {
+
+    parse ( t, {
+      input: ['--bool', '--str', '--no-foo', '--bar', 'one', '--baz', 'one', '--baz', 'one', '--qux', 'one', 'two'],
+      options: {
+        boolean: ['bool', 'foo'],
+        string: ['str', 'bar', 'baz'],
+        eager: ['qux'],
+        variadic: ['bool', 'str', 'foo', 'bar', 'baz'],
+      },
+      output: {
+        bool: [true],
+        foo: [false],
+        bar: ['one'],
+        baz: ['one', 'one'],
+        qux: ['one', 'two'],
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'detects string flags with empty value as missing, when they are required', t => { //TODO: Maybe they should just never receive an empty value
 
     t.plan ( 2 );

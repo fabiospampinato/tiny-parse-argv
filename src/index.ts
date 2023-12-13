@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import {isBoolean, isOverridable, set, uniq, without, zip} from './utils';
+import {isBoolean, isOverridable, setNormal, setVariadic, uniq, without, zip} from './utils';
 import type {Options, ParsedArgs} from './types';
 
 /* HELPERS */
@@ -37,7 +37,9 @@ const getAliasedSet = ( aliases: Partial<Record<string, string[]>>, values: stri
 
 };
 
-const setAliased = ( target: any, key: string, value: any, aliases: Partial<Record<string, string[]>> ): void => {
+const setAliased = ( target: any, key: string, value: any, variadic: boolean, aliases: Partial<Record<string, string[]>> ): void => {
+
+  const set = variadic ? setVariadic : setNormal;
 
   set ( target, key, value );
 
@@ -163,7 +165,8 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const aliases = getAliasesMap ( options.alias );
   const booleans = getAliasedSet ( aliases, options.boolean );
   const strings = getAliasedSet ( aliases, options.string );
-  const eager = getAliasedSet ( aliases, options.eager );
+  const eagers = getAliasedSet ( aliases, options.eager );
+  const variadics = getAliasedSet ( aliases, options.variadic );
   const defaults = options.default || {};
   const required = options.required || [];
   const known = new Set ([ ...booleans, ...strings, ...Object.keys ( defaults ) ]);
@@ -192,9 +195,10 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
         if ( !strings.has ( key ) ) { // String options shouldn't have an inferred value
 
-          const value = ( strings.has ( key ) ? '' : positive );
+          const variadic = variadics.has ( key );
+          const value = variadic ? [positive] : positive;
 
-          setAliased ( parsed, key, value, aliases );
+          setAliased ( parsed, key, value, variadic, aliases );
 
         }
 
@@ -203,7 +207,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
       found.push ( key );
 
       optionPrev = option;
-      optionEagerPrev = eager.has ( key ) ? option : '';
+      optionEagerPrev = eagers.has ( key ) ? option : '';
 
     } else { // Value or Argument
 
@@ -211,11 +215,15 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
       if ( optionPrev && ( !booleans.has ( optionPrev ) || isBoolean ( value ) ) ) { // Regular value
 
-        setAliased ( parsed, optionPrev, value, aliases );
+        const variadic = variadics.has ( optionPrev );
+
+        setAliased ( parsed, optionPrev, value, variadic, aliases );
 
       } else if ( optionEagerPrev && !booleans.has ( optionEagerPrev ) ) { // Eager value
 
-        setAliased ( parsed, optionEagerPrev, value, aliases );
+        const variadic = variadics.has ( optionEagerPrev );
+
+        setAliased ( parsed, optionEagerPrev, value, variadic, aliases );
 
       } else { // Argument
 

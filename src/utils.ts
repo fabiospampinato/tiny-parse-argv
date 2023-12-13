@@ -1,6 +1,12 @@
 
 /* MAIN */
 
+const castArray = <T> ( value: T | T[] ): T[] => {
+
+  return Array.isArray ( value ) ? value : [value];
+
+};
+
 const isBoolean = ( value: unknown ): value is true | false => {
 
   return value === true || value === false;
@@ -19,7 +25,7 @@ const isOverridable = ( value: unknown ): value is true | false | null | undefin
 
 };
 
-const set = ( target: any, key: string, value: any ): void => {
+const setNormal = ( target: any, key: string, value: any ): void => {
 
   if ( Array.isArray ( target[key] ) ) {
 
@@ -32,6 +38,26 @@ const set = ( target: any, key: string, value: any ): void => {
   } else {
 
     target[key] = [target[key], value];
+
+  }
+
+};
+
+const setVariadic = ( target: any, key: string, value: any ): void => {
+
+  const values = castArray ( value );
+
+  if ( Array.isArray ( target[key] ) ) {
+
+    target[key].push ( ...values );
+
+  } else if ( isOverridable ( target[key] ) ) {
+
+    target[key] = values;
+
+  } else {
+
+    target[key] = [target[key], ...values];
 
   }
 
@@ -57,4 +83,4 @@ const zip = <T extends string, U> ( keys: T[] | Set<T>, value: U ): Record<T, U>
 
 /* EXPORT */
 
-export {isBoolean, isNil, isOverridable, set, uniq, without, zip};
+export {castArray, isBoolean, isNil, isOverridable, setNormal, setVariadic, uniq, without, zip};

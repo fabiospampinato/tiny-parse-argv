@@ -8,6 +8,7 @@ type Options = {
   string?: string[],
   eager?: string[],
   required?: string[],
+  variadic?: string[],
   alias?: Record<string, string[]>,
   default?: Partial<Record<string, any>>,
   onInvalid?: ( flags: string[] ) => void,

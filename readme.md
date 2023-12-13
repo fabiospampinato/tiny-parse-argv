@@ -17,6 +17,7 @@ The following features are provided:
 - `options.boolean`: the value for the listed flags will always be coerced to a boolean.
 - `options.string`: the value for the listed flags will always be coerced to a string.
 - `options.eager`: the listed flags are considered to be eager, and will consume multiple consecutive non-flag values.
+- `options.variadic`: the listed flags are considered to be variadic, and their value, if present, will always be an array.
 - `options.required`: the listed flags are considered to be required, if some are missing `options.onMissing` will be called.
 - `options.alias`: if any aliased flag is assigned then all the aliases for it will be assigned too, automatically.
 - `options.default`: an object containing default values, which will be used if not overridded by the `argv` array.
