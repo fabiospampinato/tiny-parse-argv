@@ -613,6 +613,60 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  // dotted: https://github.com/minimistjs/minimist/blob/main/test/dotted.js
+
+  it ( 'dotted alias', t => {
+
+    parse ( t, {
+      input: ['--a.b', '22'],
+      options: {
+        alias: { 'a.b': ['aa.bb'] },
+        default: { 'a.b': 11 }
+      },
+      output: {
+        'a.b': 22,
+        'aa.bb': 22,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
+  it ( 'dotted default', t => {
+
+    parse ( t, {
+      input: [],
+      options: {
+        alias: { 'a.b': ['aa.bb'] },
+        default: { 'a.b': 11 }
+      },
+      output: {
+        'a.b': 11,
+        'aa.bb': 11,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
+  it ( 'dotted default with no alias', t => {
+
+    parse ( t, {
+      input: [],
+      options: {
+        default: { 'a.b': 11 }
+      },
+      output: {
+        'a.b': 11,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   // kv_short: https://github.com/minimistjs/minimist/blob/main/test/kv_short.js
 
   it ( 'short -k=v', t => {
