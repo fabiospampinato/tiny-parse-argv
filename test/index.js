@@ -146,6 +146,28 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'defaults are expanded to aliases', t => {
+
+    parse ( t, {
+      input: [],
+      options: {
+        alias: { 'foo': ['foo2', 'foo3'], 'bar': ['bar2', 'bar3'] },
+        default: { 'foo': 11, 'bar2': '11' }
+      },
+      output: {
+        'foo': 11,
+        'foo2': 11,
+        'foo3': 11,
+        'bar': '11',
+        'bar2': '11',
+        'bar3': '11',
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'detects string flags with empty value as missing, when they are required', t => { //TODO: Maybe they should just never receive an empty value
 
     t.plan ( 2 );

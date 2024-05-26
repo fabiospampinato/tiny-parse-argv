@@ -37,6 +37,29 @@ const getAliasedSet = ( aliases: Partial<Record<string, string[]>>, values: stri
 
 };
 
+const getAliasedDefaults = ( aliases: Partial<Record<string, string[]>>, defaults: Partial<Record<string, any>> = {} ): Partial<Record<string, any>> => {
+
+  const defaultsAliased: Partial<Record<string, any>> = {};
+
+  for ( const key in defaults ) {
+
+    const value = defaults[key];
+    const keys = uniq ([ key, ...( aliases[key] || [] ) ]);
+
+    for ( const key of keys ) {
+
+      if ( key in defaultsAliased ) continue;
+
+      defaultsAliased[key] = value;
+
+    }
+
+  }
+
+  return defaultsAliased;
+
+};
+
 const setAliased = ( target: any, key: string, value: any, variadic: boolean, aliases: Partial<Record<string, string[]>> ): void => {
 
   const set = variadic ? setVariadic : setNormal;
@@ -167,7 +190,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const strings = getAliasedSet ( aliases, options.string );
   const eagers = getAliasedSet ( aliases, options.eager );
   const variadics = getAliasedSet ( aliases, options.variadic );
-  const defaults = options.default || {};
+  const defaults = getAliasedDefaults ( aliases, options.default || {} );
   const required = options.required || [];
   const known = new Set ([ ...booleans, ...strings, ...Object.keys ( defaults ) ]);
   const found: string[] = [];
