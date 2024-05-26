@@ -103,6 +103,37 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports dotted shorthand flag', t => {
+
+    parse ( t, {
+      input: ['-.'],
+      output: {
+        '.': true,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
+  it ( 'supports dotted longhand flags', t => {
+
+    parse ( t, {
+      input: ['--.', '--..', '--.foo', '--foo.', '--.foo.', '--.foo.bar.'],
+      output: {
+        '.': true,
+        '..': true,
+        '.foo': true,
+        'foo.': true,
+        '.foo.': true,
+        '.foo.bar.': true,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'supports eager flags', t => {
 
     parse ( t, {
@@ -155,12 +186,12 @@ describe ( 'tiny-parse-argv', it => {
         default: { 'foo': 11, 'bar2': '11' }
       },
       output: {
-        'foo': 11,
-        'foo2': 11,
-        'foo3': 11,
-        'bar': '11',
-        'bar2': '11',
-        'bar3': '11',
+        foo: 11,
+        foo2: 11,
+        foo3: 11,
+        bar: '11',
+        bar2: '11',
+        bar3: '11',
         _: [],
         '--': []
       }
