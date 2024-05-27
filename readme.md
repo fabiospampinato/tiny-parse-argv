@@ -21,6 +21,8 @@ The following features are provided:
 - `options.required`: the listed flags are considered to be required, if some are missing `options.onMissing` will be called.
 - `options.alias`: if any aliased flag is assigned then all the aliases for it will be assigned too, automatically.
 - `options.default`: an object containing default values, which will be used if not overridded by the `argv` array.
+- `options.incompatible`: an object mapping flags with other flags they are incompatible with.
+- `options.onIncompatible`: a function that will be called if any pairs of flags that are incompatible with each other is detected.
 - `options.onInvalid`: a function that will be called if any of the provided flags have an invalid value, e.g. a boolean value for a string flag.
 - `options.onMissing`: a function that will be called if any of the required flags is missing. If a default value is provided for a flag it won't be considered as missing.
 - `options.onUnknown`: a function that will be called if any of the flags are unknown, i.e. not listed as either a boolean, a string, or an alias. If a default value is provided for a flag it won't be considered as unknown.
