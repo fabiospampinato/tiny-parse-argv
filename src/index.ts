@@ -132,7 +132,7 @@ const parseWithRegExp = ( argv: string[], re: RegExp, callback: ( ...args: strin
 
 const parseCharSeparator = ( argv: string[] ): string[] => {
 
-  const re = /^-([a-zA-Z0-9]{2,})([^]*)$/;
+  const re = /^-([a-zA-Z0-9\.]{2,})([^]*)$/;
 
   return parseWithRegExp ( argv, re, ( _, chars ) => chars.split ( '' ).map ( char => `-${char}` ) );
 

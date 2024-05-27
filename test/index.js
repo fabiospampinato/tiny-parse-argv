@@ -167,6 +167,22 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports dotted shorthand flag, with implicit splits', t => {
+
+    parse ( t, {
+      input: ['-.abc'],
+      output: {
+        '.': true,
+        a: true,
+        b: true,
+        c: true,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'supports dotted longhand flags', t => {
 
     parse ( t, {
