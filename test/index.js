@@ -271,6 +271,42 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'detects the following in this order: unknown, missing, invalid, incompatible', t => {
+
+    const order = [];
+    const expected = ['unknown', 'missing', 'invalid', 'incompatible'];
+
+    parse ( t, {
+      input: ['--unknown', '--bool', '--incompatible'],
+      options: {
+        string: ['bool'],
+        required: ['missing'],
+        incompatible: { 'bool': ['incompatible'] },
+        onIncompatible () {
+          order.push ( 'incompatible' );
+        },
+        onMissing () {
+          order.push ( 'missing' );
+        },
+        onInvalid () {
+          order.push ( 'invalid' );
+        },
+        onUnknown () {
+          order.push ( 'unknown' );
+        }
+      },
+      output: {
+        unknown: true,
+        incompatible: true,
+        _: [],
+        '--': []
+      }
+    });
+
+    t.deepEqual ( order, expected );
+
+  });
+
   // bool: https://github.com/minimistjs/minimist/blob/main/test/bool.js
 
   it ( 'flag boolean default false', t => {
