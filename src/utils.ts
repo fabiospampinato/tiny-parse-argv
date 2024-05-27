@@ -69,6 +69,24 @@ const uniq = <T> ( values: T[] ): T[] => {
 
 };
 
+const uniqBy = <T> ( values: T[], iterator: ( value: T, index: number, arr: ArrayLike<T> ) => unknown ): T[] => {
+
+  const ids = new Set ();
+
+  return values.filter ( ( value, index, arr ) => {
+
+    const id = iterator ( value, index, arr );
+
+    if ( ids.has ( id ) ) return false;
+
+    ids.add ( id );
+
+    return true;
+
+  });
+
+};
+
 const without = <T> ( values: T[], value: T ): T[] => {
 
   return values.filter ( other => other !== value );
@@ -83,4 +101,4 @@ const zip = <T extends string, U> ( keys: T[] | Set<T>, value: U ): Record<T, U>
 
 /* EXPORT */
 
-export {castArray, isBoolean, isNil, isOverridable, setNormal, setVariadic, uniq, without, zip};
+export {castArray, isBoolean, isNil, isOverridable, setNormal, setVariadic, uniq, uniqBy, without, zip};

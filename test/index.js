@@ -31,6 +31,57 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports detecting incompatible flags', t => {
+
+    t.plan ( 2 );
+
+    parse ( t, {
+      input: ['--foo', '--baz', '--bar', '--qux'],
+      options: {
+        incompatible: { 'foo': ['bar', 'baz'], 'bar': ['baz'] },
+        onIncompatible ( flags ) {
+          t.deepEqual ( flags, [['foo', 'baz'], ['foo', 'bar'], ['baz', 'bar']] );
+        }
+      },
+      output: {
+        foo: true,
+        bar: true,
+        baz: true,
+        qux: true,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
+  it ( 'support detecting incompatible aliased flags', t => {
+
+    t.plan ( 2 );
+
+    parse ( t, {
+      input: ['--foo', '--z', '--a', '--qux'],
+      options: {
+        alias: { z: ['baz'], a: ['bar'] },
+        incompatible: { 'foo': ['bar', 'baz'], 'bar': ['baz'] },
+        onIncompatible ( flags ) {
+          t.deepEqual ( flags, [['foo', 'z'], ['foo', 'a'], ['z', 'a']] );
+        }
+      },
+      output: {
+        foo: true,
+        bar: true,
+        baz: true,
+        qux: true,
+        a: true,
+        z: true,
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'supports detecting invalid flags', t => {
 
     t.plan ( 2 );

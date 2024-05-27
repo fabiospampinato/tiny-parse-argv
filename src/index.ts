@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import {isBoolean, isOverridable, setNormal, setVariadic, uniq, without, zip} from './utils';
+import {isBoolean, isOverridable, setNormal, setVariadic, uniq, uniqBy, without, zip} from './utils';
 import type {Options, ParsedArgs} from './types';
 
 /* HELPERS */
@@ -57,6 +57,35 @@ const getAliasedDefaults = ( aliases: Partial<Record<string, string[]>>, default
   }
 
   return defaultsAliased;
+
+};
+
+const getAliasedIncompatibles = ( aliases: Partial<Record<string, string[]>>, incompatibles: Partial<Record<string, string[]>> = {} ): Partial<Record<string, Set<string>>> => {
+
+  const incompatiblesAliased: Partial<Record<string, Set<string>>> = {};
+
+  for ( const source in incompatibles ) {
+
+    const sources = getAliasedSet ( aliases, [source] );
+    const targets = getAliasedSet ( aliases, incompatibles[source] );
+
+    for ( const source of sources ) {
+
+      for ( const target of targets ) {
+
+        const sourceSet = ( incompatiblesAliased[source] ||= new Set () );
+        const targetSet = ( incompatiblesAliased[target] ||= new Set () );
+
+        sourceSet.add ( target );
+        targetSet.add ( source );
+
+      }
+
+    }
+
+  }
+
+  return incompatiblesAliased;
 
 };
 
@@ -190,10 +219,12 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const strings = getAliasedSet ( aliases, options.string );
   const eagers = getAliasedSet ( aliases, options.eager );
   const variadics = getAliasedSet ( aliases, options.variadic );
-  const defaults = getAliasedDefaults ( aliases, options.default || {} );
+  const defaults = getAliasedDefaults ( aliases, options.default );
+  const incompatibles = getAliasedIncompatibles ( aliases, options.incompatible );
   const required = options.required || [];
   const known = new Set ([ ...booleans, ...strings, ...Object.keys ( defaults ) ]);
   const found: string[] = [];
+  const onIncompatible = options.onIncompatible;
   const onInvalid = options.onInvalid;
   const onMissing = options.onMissing;
   const onUnknown = options.onUnknown;
@@ -296,6 +327,40 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
     if ( invalids.length ) {
 
       onInvalid ( invalids );
+
+    }
+
+  }
+
+  if ( onIncompatible ) {
+
+    const options = uniq ( found );
+    const pairs: [string, string][] = [];
+
+    for ( let si = 0, sl = options.length; si < sl; si++ ) {
+
+      const source = options[si];
+      const sourceIncompatibles = incompatibles[source];
+
+      if ( !sourceIncompatibles ) continue;
+
+      for ( let ti = si + 1, tl = sl; ti < tl; ti++ ) {
+
+        const target = options[ti];
+
+        if ( !sourceIncompatibles.has ( target ) ) continue;
+
+        pairs.push ([ source, target ]);
+
+      }
+
+    }
+
+    if ( pairs.length ) {
+
+      const pairsUnique = uniqBy ( pairs, pair => [...pair].sort ().join () );
+
+      onIncompatible ( pairsUnique );
 
     }
 
