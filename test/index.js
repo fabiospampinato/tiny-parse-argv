@@ -82,6 +82,26 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports detecting invalid integer flags', t => {
+
+    t.plan ( 2 );
+
+    parse ( t, {
+      input: ['--foo', '56.123', '--bar', 'abc', '--no-baz'],
+      options: {
+        integer: ['foo', 'bar', 'baz'],
+        onInvalid ( flags ) {
+          t.deepEqual ( flags, ['foo', 'bar', 'baz'] );
+        }
+      },
+      output: {
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'supports detecting invalid number flags', t => {
 
     t.plan ( 2 );
@@ -257,6 +277,34 @@ describe ( 'tiny-parse-argv', it => {
         bar: ['one'],
         baz: ['one', 'one'],
         qux: ['one', 'two'],
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
+  it ( 'supports explicit integers', t => {
+
+    parse ( t, {
+      input: ['-n', '0001234'],
+      options: {
+        integer: ['n']
+      },
+      output: {
+        n: 1234,
+        _: [],
+        '--': []
+      }
+    });
+
+    parse ( t, {
+      input: ['-n', '56'],
+      options: {
+        integer: ['n']
+      },
+      output: {
+        n: 56,
         _: [],
         '--': []
       }

@@ -184,7 +184,7 @@ const parseOptionNegation = ( arg: string ): [key: string, positive: boolean] =>
 
 };
 
-const parseValue = ( key: string, value: string, booleans: Set<string>, numbers: Set<string>, strings: Set<string> ): string | number | boolean | null => {
+const parseValue = ( key: string, value: string, booleans: Set<string>, integers: Set<string>, numbers: Set<string>, strings: Set<string> ): string | number | boolean | null => {
 
   if ( booleans.has ( key ) ) {
 
@@ -194,11 +194,21 @@ const parseValue = ( key: string, value: string, booleans: Set<string>, numbers:
 
   }
 
+  if ( integers.has ( key ) ) {
+
+    const integer = Number ( value );
+
+    if ( Number.isInteger ( integer ) ) return integer;
+
+    return null;
+
+  }
+
   if ( numbers.has ( key ) ) {
 
     const number = Number ( value );
 
-    if ( !isNaN ( number ) ) return number;
+    if ( !Number.isNaN ( number ) ) return number;
 
     return null;
 
@@ -226,6 +236,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
   const aliases = getAliasesMap ( options.alias );
   const booleans = getAliasedSet ( aliases, options.boolean );
+  const integers = getAliasedSet ( aliases, options.integer );
   const numbers = getAliasedSet ( aliases, options.number );
   const strings = getAliasedSet ( aliases, options.string );
   const eagers = getAliasedSet ( aliases, options.eager );
@@ -233,7 +244,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const defaults = getAliasedDefaults ( aliases, options.default );
   const incompatibles = getAliasedIncompatibles ( aliases, options.incompatible );
   const required = options.required || [];
-  const known = new Set ([ ...booleans, ...numbers, ...strings, ...Object.keys ( defaults ) ]);
+  const known = new Set ([ ...booleans, ...integers, ...numbers, ...strings, ...Object.keys ( defaults ) ]);
   const found: string[] = [];
   const onIncompatible = options.onIncompatible;
   const onInvalid = options.onInvalid;
@@ -258,7 +269,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
       if ( isOverridable ( parsed[key] ) ) { // Maybe we are setting this option multiple times
 
-        if ( !numbers.has ( key ) && !strings.has ( key ) ) { // String options shouldn't have an inferred value
+        if ( !integers.has ( key ) && !numbers.has ( key ) && !strings.has ( key ) ) { // String options shouldn't have an inferred value
 
           const variadic = variadics.has ( key );
           const value = variadic ? [positive] : positive;
@@ -276,7 +287,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
     } else { // Value or Argument
 
-      const value = parseValue ( optionPrev, arg, booleans, numbers, strings );
+      const value = parseValue ( optionPrev, arg, booleans, integers, numbers, strings );
 
       if ( optionPrev && ( !booleans.has ( optionPrev ) || isBoolean ( value ) ) ) { // Regular value
 

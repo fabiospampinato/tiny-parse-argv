@@ -15,6 +15,7 @@ The following features are provided:
 - Values that would be interpreted as numbers if they were JavaScript are coerced to numbers automatically.
 - Flags that could lead to prototype pollution issues are safely ignored.
 - `options.boolean`: the value for the listed flags will always be coerced to a boolean.
+- `options.integer`: the value for the listed flags will always be coerced to a integer.
 - `options.number`: the value for the listed flags will always be coerced to a number.
 - `options.string`: the value for the listed flags will always be coerced to a string.
 - `options.eager`: the listed flags are considered to be eager, and will consume multiple consecutive non-flag values.
