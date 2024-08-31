@@ -5,6 +5,7 @@
 
 type Options = {
   boolean?: string[],
+  number?: string[],
   string?: string[],
   eager?: string[],
   required?: string[],

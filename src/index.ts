@@ -184,13 +184,23 @@ const parseOptionNegation = ( arg: string ): [key: string, positive: boolean] =>
 
 };
 
-const parseValue = ( key: string, value: string, booleans: Set<string>, strings: Set<string> ): string | number | boolean => {
+const parseValue = ( key: string, value: string, booleans: Set<string>, numbers: Set<string>, strings: Set<string> ): string | number | boolean | null => {
 
   if ( booleans.has ( key ) ) {
 
     if ( value === 'true' ) return true;
 
     if ( value === 'false' ) return false;
+
+  }
+
+  if ( numbers.has ( key ) ) {
+
+    const number = Number ( value );
+
+    if ( !isNaN ( number ) ) return number;
+
+    return null;
 
   }
 
@@ -216,13 +226,14 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
   const aliases = getAliasesMap ( options.alias );
   const booleans = getAliasedSet ( aliases, options.boolean );
+  const numbers = getAliasedSet ( aliases, options.number );
   const strings = getAliasedSet ( aliases, options.string );
   const eagers = getAliasedSet ( aliases, options.eager );
   const variadics = getAliasedSet ( aliases, options.variadic );
   const defaults = getAliasedDefaults ( aliases, options.default );
   const incompatibles = getAliasedIncompatibles ( aliases, options.incompatible );
   const required = options.required || [];
-  const known = new Set ([ ...booleans, ...strings, ...Object.keys ( defaults ) ]);
+  const known = new Set ([ ...booleans, ...numbers, ...strings, ...Object.keys ( defaults ) ]);
   const found: string[] = [];
   const onIncompatible = options.onIncompatible;
   const onInvalid = options.onInvalid;
@@ -247,7 +258,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
       if ( isOverridable ( parsed[key] ) ) { // Maybe we are setting this option multiple times
 
-        if ( !strings.has ( key ) ) { // String options shouldn't have an inferred value
+        if ( !numbers.has ( key ) && !strings.has ( key ) ) { // String options shouldn't have an inferred value
 
           const variadic = variadics.has ( key );
           const value = variadic ? [positive] : positive;
@@ -265,23 +276,31 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
     } else { // Value or Argument
 
-      const value = parseValue ( optionPrev, arg, booleans, strings );
+      const value = parseValue ( optionPrev, arg, booleans, numbers, strings );
 
       if ( optionPrev && ( !booleans.has ( optionPrev ) || isBoolean ( value ) ) ) { // Regular value
 
-        const variadic = variadics.has ( optionPrev );
+        if ( value !== null ) {
 
-        setAliased ( parsed, optionPrev, value, variadic, aliases );
+          const variadic = variadics.has ( optionPrev );
+
+          setAliased ( parsed, optionPrev, value, variadic, aliases );
+
+        }
 
       } else if ( optionEagerPrev && !booleans.has ( optionEagerPrev ) ) { // Eager value
 
-        const variadic = variadics.has ( optionEagerPrev );
+        if ( value !== null ) {
 
-        setAliased ( parsed, optionEagerPrev, value, variadic, aliases );
+          const variadic = variadics.has ( optionEagerPrev );
+
+          setAliased ( parsed, optionEagerPrev, value, variadic, aliases );
+
+        }
 
       } else { // Argument
 
-        parsed._.push ( String ( value ) );
+        parsed._.push ( String ( value ?? arg ) );
 
         optionEagerPrev = '';
 
