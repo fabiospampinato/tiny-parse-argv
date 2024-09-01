@@ -6,13 +6,13 @@ import type {Options, ParsedArgs} from './types';
 
 /* HELPERS */
 
-const getAliasesMap = ( aliases: Record<string, string[]> = {} ): Partial<Record<string, string[]>> => {
+const getAliasesMap = ( aliases: Partial<Record<string, string[]>> = {} ): Partial<Record<string, string[]>> => {
 
   const map: Partial<Record<string, string[]>> = {};
 
   for ( const key in aliases ) {
 
-    const values = uniq ([ key, ...aliases[key] ]);
+    const values = uniq ([ key, ...( aliases[key] || [] ) ]);
 
     for ( const value of values ) {
 
