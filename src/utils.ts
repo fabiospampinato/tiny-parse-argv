@@ -19,9 +19,21 @@ const isNil = ( value: unknown ): value is null | undefined => {
 
 };
 
+const isNull = ( value: unknown ): value is null => {
+
+  return value === null;
+
+};
+
 const isOverridable = ( value: unknown ): value is true | false | null | undefined | '' => {
 
   return isNil ( value ) || isBoolean ( value ) || value === '';
+
+};
+
+const isUndefined = ( value: unknown ): value is undefined => {
+
+  return value === undefined;
 
 };
 
@@ -101,4 +113,4 @@ const zip = <T extends string, U> ( keys: T[] | Set<T>, value: U ): Record<T, U>
 
 /* EXPORT */
 
-export {castArray, isBoolean, isNil, isOverridable, setNormal, setVariadic, uniq, uniqBy, without, zip};
+export {castArray, isBoolean, isNil, isNull, isOverridable, isUndefined, setNormal, setVariadic, uniq, uniqBy, without, zip};

@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import {isBoolean, isOverridable, setNormal, setVariadic, uniq, uniqBy, without, zip} from './utils';
+import {isBoolean, isNull, isOverridable, isUndefined, setNormal, setVariadic, uniq, uniqBy, without, zip} from './utils';
 import type {Options, ParsedArgs} from './types';
 
 /* HELPERS */
@@ -19,6 +19,34 @@ const getAliasesMap = ( aliases: Partial<Record<string, string[]>> = {} ): Parti
       if ( value in map ) continue;
 
       map[value] = without ( values, value );
+
+    }
+
+  }
+
+  return map;
+
+};
+
+const getAliasedMap = <T> ( aliases: Partial<Record<string, string[]>>, object?: Partial<Record<string, T>> ): Map<string, T> => {
+
+  const map = new Map<string, T> ();
+
+  for ( const key in object ) {
+
+    const value = object[key];
+
+    if ( isUndefined ( value ) ) continue;
+
+    map.set ( key, value );
+
+    const keyAliases = aliases[key];
+
+    if ( !keyAliases ) continue;
+
+    for ( const key of keyAliases ) {
+
+      map.set ( key, value );
 
     }
 
@@ -184,7 +212,13 @@ const parseOptionNegation = ( arg: string ): [key: string, positive: boolean] =>
 
 };
 
-const parseValue = ( key: string, value: string, booleans: Set<string>, integers: Set<string>, numbers: Set<string>, strings: Set<string> ): string | number | boolean | null => {
+const parseValue = ( key: string, value: string, booleans: Set<string>, integers: Set<string>, numbers: Set<string>, strings: Set<string>, validators: Map<string, ( value: string ) => boolean> ): string | number | boolean | null => {
+
+  if ( validators.get ( key )?.( value ) === false ) {
+
+    return null;
+
+  }
 
   if ( booleans.has ( key ) ) {
 
@@ -243,6 +277,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const variadics = getAliasedSet ( aliases, options.variadic );
   const defaults = getAliasedDefaults ( aliases, options.default );
   const incompatibles = getAliasedIncompatibles ( aliases, options.incompatible );
+  const validators = getAliasedMap ( aliases, options.validators );
   const required = options.required || [];
   const known = new Set ([ ...booleans, ...integers, ...numbers, ...strings, ...Object.keys ( defaults ) ]);
   const found: string[] = [];
@@ -287,11 +322,11 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
     } else { // Value or Argument
 
-      const value = parseValue ( optionPrev, arg, booleans, integers, numbers, strings );
+      const value = parseValue ( optionPrev, arg, booleans, integers, numbers, strings, validators );
 
       if ( optionPrev && ( !booleans.has ( optionPrev ) || isBoolean ( value ) ) ) { // Regular value
 
-        if ( value !== null ) {
+        if ( !isNull ( value ) ) {
 
           const variadic = variadics.has ( optionPrev );
 
@@ -301,7 +336,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
       } else if ( optionEagerPrev && !booleans.has ( optionEagerPrev ) ) { // Eager value
 
-        if ( value !== null ) {
+        if ( !isNull ( value ) ) {
 
           const variadic = variadics.has ( optionEagerPrev );
 

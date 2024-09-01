@@ -14,6 +14,7 @@ type Options = {
   alias?: Partial<Record<string, string[]>>,
   default?: Partial<Record<string, any>>,
   incompatible?: Partial<Record<string, string[]>>,
+  validators?: Partial<Record<string, ( value: string ) => boolean>>,
   onIncompatible?: ( flags: [string, string][] ) => void,
   onInvalid?: ( flags: string[] ) => void,
   onMissing?: ( flags: string[] ) => void,

@@ -31,6 +31,62 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports custom validators', t => {
+
+    t.plan ( 6 );
+
+    parse ( t, {
+      input: ['--foo', '56'],
+      options: {
+        integer: ['foo']
+      },
+      output: {
+        foo: 56,
+        _: [],
+        '--': []
+      }
+    });
+
+    parse ( t, {
+      input: ['--foo', '56'],
+      options: {
+        integer: ['foo'],
+        validators: {
+          foo: value => {
+            t.is ( value, '56' );
+            return true;
+          }
+        }
+      },
+      output: {
+        foo: 56,
+        _: [],
+        '--': []
+      }
+    });
+
+    parse ( t, {
+      input: ['--foo', '56'],
+      options: {
+        integer: ['foo'],
+        validators: {
+          foo: value => {
+            t.is ( value, '56' );
+            return false;
+          }
+        },
+        onInvalid ( flags ) {
+          t.deepEqual ( flags, ['foo'] );
+        }
+      },
+      output: {
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'supports detecting incompatible flags', t => {
 
     t.plan ( 2 );
