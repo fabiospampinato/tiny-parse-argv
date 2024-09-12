@@ -317,6 +317,29 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports explicitly unary flags', t => {
+
+    parse ( t, {
+      input: ['--bool', '--str', '--no-foo', '--bar', 'one', '--baz', 'one', '--baz', 'one', '--qux', 'one', 'two'],
+      options: {
+        boolean: ['bool', 'foo'],
+        string: ['str', 'bar', 'baz'],
+        eager: ['qux'],
+        unary: ['bool', 'str', 'foo', 'bar', 'baz', 'qux'],
+      },
+      output: {
+        bool: true,
+        foo: false,
+        bar: 'one',
+        baz: 'one',
+        qux: 'two',
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'supports explicitly variadic flags', t => {
 
     parse ( t, {

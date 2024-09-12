@@ -37,9 +37,13 @@ const isUndefined = ( value: unknown ): value is undefined => {
 
 };
 
-const setNormal = ( target: any, key: string, value: any ): void => {
+const setNormal = ( target: any, key: string, value: any, override: boolean ): void => {
 
-  if ( Array.isArray ( target[key] ) ) {
+  if ( override ) {
+
+    target[key] = value;
+
+  } else if ( Array.isArray ( target[key] ) ) {
 
     target[key].push ( value );
 
@@ -55,11 +59,15 @@ const setNormal = ( target: any, key: string, value: any ): void => {
 
 };
 
-const setVariadic = ( target: any, key: string, value: any ): void => {
+const setVariadic = ( target: any, key: string, value: any, override: boolean ): void => {
 
   const values = castArray ( value );
 
-  if ( Array.isArray ( target[key] ) ) {
+  if ( override ) {
+
+    target[key] = values;
+
+  } else if ( Array.isArray ( target[key] ) ) {
 
     target[key].push ( ...values );
 

@@ -10,6 +10,7 @@ type Options = {
   string?: string[],
   eager?: string[],
   required?: string[],
+  unary?: string[],
   variadic?: string[],
   alias?: Partial<Record<string, string[]>>,
   default?: Partial<Record<string, any>>,

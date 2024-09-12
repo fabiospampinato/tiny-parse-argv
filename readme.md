@@ -19,6 +19,7 @@ The following features are provided:
 - `options.number`: the value for the listed flags will always be coerced to a number.
 - `options.string`: the value for the listed flags will always be coerced to a string.
 - `options.eager`: the listed flags are considered to be eager, and will consume multiple consecutive non-flag values.
+- `options.unary`: the listed flags are considered to be unary, and if multiple values are provided only the last one will be considered.
 - `options.variadic`: the listed flags are considered to be variadic, and their value, if present, will always be an array.
 - `options.required`: the listed flags are considered to be required, if some are missing `options.onMissing` will be called.
 - `options.alias`: if any aliased flag is assigned then all the aliases for it will be assigned too, automatically.

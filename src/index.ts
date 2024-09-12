@@ -117,15 +117,15 @@ const getAliasedIncompatibles = ( aliases: Partial<Record<string, string[]>>, in
 
 };
 
-const setAliased = ( target: any, key: string, value: any, variadic: boolean, aliases: Partial<Record<string, string[]>> ): void => {
+const setAliased = ( target: any, key: string, value: any, unary: boolean, variadic: boolean, aliases: Partial<Record<string, string[]>> ): void => {
 
   const set = variadic ? setVariadic : setNormal;
 
-  set ( target, key, value );
+  set ( target, key, value, unary );
 
   aliases[key]?.forEach ( alias => {
 
-    set ( target, alias, value );
+    set ( target, alias, value, unary );
 
   });
 
@@ -274,6 +274,7 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
   const numbers = getAliasedSet ( aliases, options.number );
   const strings = getAliasedSet ( aliases, options.string );
   const eagers = getAliasedSet ( aliases, options.eager );
+  const unarys = getAliasedSet ( aliases, options.unary );
   const variadics = getAliasedSet ( aliases, options.variadic );
   const defaults = getAliasedDefaults ( aliases, options.default );
   const incompatibles = getAliasedIncompatibles ( aliases, options.incompatible );
@@ -306,10 +307,11 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
         if ( !integers.has ( key ) && !numbers.has ( key ) && !strings.has ( key ) ) { // String options shouldn't have an inferred value
 
+          const unary = unarys.has ( key );
           const variadic = variadics.has ( key );
           const value = variadic ? [positive] : positive;
 
-          setAliased ( parsed, key, value, variadic, aliases );
+          setAliased ( parsed, key, value, unary, variadic, aliases );
 
         }
 
@@ -328,9 +330,10 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
         if ( !isNull ( value ) ) {
 
+          const unary = unarys.has ( optionPrev );
           const variadic = variadics.has ( optionPrev );
 
-          setAliased ( parsed, optionPrev, value, variadic, aliases );
+          setAliased ( parsed, optionPrev, value, unary, variadic, aliases );
 
         }
 
@@ -338,9 +341,10 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
         if ( !isNull ( value ) ) {
 
+          const unary = unarys.has ( optionEagerPrev );
           const variadic = variadics.has ( optionEagerPrev );
 
-          setAliased ( parsed, optionEagerPrev, value, variadic, aliases );
+          setAliased ( parsed, optionEagerPrev, value, unary, variadic, aliases );
 
         }
 
