@@ -49,13 +49,15 @@ Other than that it should work pretty much identically, since we are basically u
 ## Install
 
 ```sh
-npm install --save tiny-parse-argv
+npm install tiny-parse-argv
 ```
 
 ## Usage
 
 ```ts
 import parseArgv from 'tiny-parse-argv';
+
+// Let's parse some arguments
 
 parseArgv ([ '-f', '--foo', 'some', 'argument', '--', '--app-flag' ]);
 // => { f: true, foo: 'some', _: ['argument'], '--': ['--app-flag'] }
