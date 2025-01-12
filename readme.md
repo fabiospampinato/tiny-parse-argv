@@ -1,6 +1,6 @@
 # Tiny Parse Argv
 
-A tiny function for parsing `process.argv`, a modern rewrite of a sensible subset of [`minimist`](https://github.com/minimistjs/minimist).
+A tiny function for parsing `process.argv`, a modern rewrite of [`minimist`](https://github.com/minimistjs/minimist).
 
 ## Features
 
