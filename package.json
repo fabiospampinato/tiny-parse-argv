@@ -3,7 +3,7 @@
   "repository": "github:fabiospampinato/tiny-parse-argv",
   "description": "A tiny function for parsing process.argv, a modern rewrite of minimist.",
   "license": "MIT",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "type": "module",
   "main": "dist/index.js",
   "exports": "./dist/index.js",
