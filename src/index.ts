@@ -170,7 +170,9 @@ const parseEqualsSeparator = ( argv: string[] ): string[] => {
 
   const re = /^(--?[^=][^=]*?)=([^]*)$/;
 
-  return parseWithRegExp ( argv, re, ( _, key, value ) => [key, value] );
+  const shieldValue = ( value: string ) => value.startsWith ( '-' ) ? `"${value}"` : value;
+
+  return parseWithRegExp ( argv, re, ( _, key, value ) => [key, shieldValue ( value )] );
 
 };
 

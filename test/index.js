@@ -448,6 +448,22 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports values that look like options', t => {
+
+    parse ( t, {
+      input: ['-s=-s', '-o="-o"', '--long=--long', '--other="--other"'],
+      output: {
+        s: '-s',
+        o: '-o',
+        long: '--long',
+        other: '--other',
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'defaults are expanded to aliases', t => {
 
     parse ( t, {
