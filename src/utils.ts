@@ -107,6 +107,12 @@ const uniqBy = <T> ( values: T[], iterator: ( value: T, index: number, arr: Arra
 
 };
 
+const unquote = ( value: string ): string => {
+
+  return value.replace ( /^(['"])(\1*)(.*)(\1\2)$/, '$3' );
+
+};
+
 const without = <T> ( values: T[], value: T ): T[] => {
 
   return values.filter ( other => other !== value );
@@ -121,4 +127,4 @@ const zip = <T extends string, U> ( keys: T[] | Set<T>, value: U ): Record<T, U>
 
 /* EXPORT */
 
-export {castArray, isBoolean, isNil, isNull, isOverridable, isUndefined, setNormal, setVariadic, uniq, uniqBy, without, zip};
+export {castArray, isBoolean, isNil, isNull, isOverridable, isUndefined, setNormal, setVariadic, uniq, uniqBy, unquote, without, zip};

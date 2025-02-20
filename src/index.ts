@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import {isBoolean, isNull, isOverridable, isUndefined, setNormal, setVariadic, uniq, uniqBy, without, zip} from './utils';
+import {isBoolean, isNull, isOverridable, isUndefined, setNormal, setVariadic, uniq, uniqBy, unquote, without, zip} from './utils';
 import type {Options, ParsedArgs} from './types';
 
 /* HELPERS */
@@ -269,12 +269,6 @@ const parseValue = ( key: string, valueRaw: string, booleans: Set<string>, integ
     return value;
 
   }
-
-};
-
-const unquote = ( value: string ): string => {
-
-  return value.replace ( /^(['"])(\1*)(.*)(\1\2)$/, '$3' );
 
 };
 
