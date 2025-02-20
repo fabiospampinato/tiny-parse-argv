@@ -419,6 +419,35 @@ describe ( 'tiny-parse-argv', it => {
 
   });
 
+  it ( 'supports explicitly quoted strings', t => {
+
+    parse ( t, {
+      input: [`-a='a'`, `-b="b"`, `-c=''c''`, `-d=""d""`, `-e="'e'"`, `-f='"f"'`],
+      output: {
+        a: 'a',
+        b: 'b',
+        c: 'c',
+        d: 'd',
+        e: "'e'",
+        f: '"f"',
+        _: [],
+        '--': []
+      }
+    });
+
+    parse ( t, {
+      input: [`--a=123`, `--b='123'`, `--c="123"`],
+      output: {
+        a: 123,
+        b: '123',
+        c: '123',
+        _: [],
+        '--': []
+      }
+    });
+
+  });
+
   it ( 'defaults are expanded to aliases', t => {
 
     parse ( t, {
@@ -1087,7 +1116,7 @@ describe ( 'tiny-parse-argv', it => {
   it ( 'already a number', t => {
 
     parse ( t, {
-      input: ['-x', 1234, 789],
+      input: ['-x', '1234', '789'],
       output: {
         x: 1234,
         _: ['789'],

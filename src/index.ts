@@ -212,7 +212,9 @@ const parseOptionNegation = ( arg: string ): [key: string, positive: boolean] =>
 
 };
 
-const parseValue = ( key: string, value: string, booleans: Set<string>, integers: Set<string>, numbers: Set<string>, strings: Set<string>, validators: Map<string, ( value: string ) => boolean> ): string | number | boolean | null => {
+const parseValue = ( key: string, valueRaw: string, booleans: Set<string>, integers: Set<string>, numbers: Set<string>, strings: Set<string>, validators: Map<string, ( value: string ) => boolean> ): string | number | boolean | null => {
+
+  const value = unquote ( String ( valueRaw ) );
 
   if ( validators.get ( key )?.( value ) === false ) {
 
@@ -248,19 +250,29 @@ const parseValue = ( key: string, value: string, booleans: Set<string>, integers
 
   }
 
-  if ( !strings.has ( key ) ) {
+  if ( strings.has ( key ) || value !== valueRaw ) {
 
-    const numberRe = /^0[xX][0-9a-fA-F]+$|^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][-+]?\d+)?$/;
-
-    if ( numberRe.test ( value ) ) {
-
-      return Number ( value );
-
-    }
+    return value;
 
   }
 
-  return String ( value );
+  const numberRe = /^0[xX][0-9a-fA-F]+$|^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][-+]?\d+)?$/;
+
+  if ( numberRe.test ( value ) ) {
+
+    return Number ( value );
+
+  } else {
+
+    return value;
+
+  }
+
+};
+
+const unquote = ( value: string ): string => {
+
+  return value.replace ( /^(['"])(\1*)(.*)(\1\2)$/, '$3' );
 
 };
 
