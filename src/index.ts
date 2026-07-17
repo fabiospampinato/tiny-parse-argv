@@ -387,11 +387,11 @@ const parseArgv = ( argv: string[], options: Options = {} ): ParsedArgs => {
 
   if ( onMissing ) {
 
-    const missings = required.filter ( key => !( key in parsedWithDefaults ) );
+    const missing = required.filter ( key => !( key in parsedWithDefaults ) );
 
-    if ( missings.length ) {
+    if ( missing.length ) {
 
-      onMissing ( missings );
+      onMissing ( missing );
 
     }
 
