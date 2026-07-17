@@ -23,7 +23,7 @@ The following features are provided:
 - `options.variadic`: the listed flags are considered to be variadic, and their value, if present, will always be an array.
 - `options.required`: the listed flags are considered to be required, if some are missing `options.onMissing` will be called.
 - `options.alias`: if any aliased flag is assigned then all the aliases for it will be assigned too, automatically.
-- `options.default`: an object containing default values, which will be used if not overridded by the `argv` array.
+- `options.default`: an object containing default values, which will be used if not overridden by the `argv` array.
 - `options.incompatible`: an object mapping flags with other flags they are incompatible with.
 - `options.validators`: an object mapping flags to custom validation functions for them, returning a boolean.
 - `options.onIncompatible`: a function that will be called if any pairs of flags that are incompatible with each other is detected.
